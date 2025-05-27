@@ -37,6 +37,14 @@ app.mount("/js", StaticFiles(directory="frontend/js"), name="js")
 def serve_index():
     return FileResponse(os.path.join("frontend", "index.html"))
 
+@app.get("/{page_name}.html", include_in_schema=False)
+def serve_html_page(page_name: str):
+    file_path = os.path.join("frontend", f"{page_name}.html")
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type='text/html')
+    raise HTTPException(status_code=404, detail="Page not found")
+
+
 # ==== Middleware CORS ====
 app.add_middleware(
     CORSMiddleware,
@@ -122,7 +130,7 @@ async def create_task(
         if new_task.pushover and current_user.pushover_user_key:
             print("Kirim notif ke pushover...")
             try:
-                saas.send_notification(new_task.judul, current_user.pushover_user_key)
+                saas.send_notification(new_task.judul, new_task.deskripsi, current_user.pushover_user_key)
             except Exception as notif_error:
                 print(f"Gagal mengirim notifikasi Pushover: {notif_error}")
             else:
