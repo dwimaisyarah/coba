@@ -41,12 +41,14 @@ def cek_deadline():
             print(f"Ditemukan {len(semua_task)} tugas yang perlu diperhatikan.")
             for task in semua_task:
                 deadline_str = task.deadline.strftime('%Y-%m-%d %H:%M')
-                if task.pushover:
+                if task.pushover and task.user and task.user.pushover_user_key:
                     pesan = f"Pengingat: Tugas '{task.judul}' akan deadline pada {deadline_str}"
+                    deskripsi = task.deskripsi or "Tidak ada deskripsi"
                     print(f"Mengirim notifikasi: {pesan}")
-                    saas.send_notification(pesan, task.pushover)
+                    saas.send_notification(task.judul, deskripsi, task.user.pushover_user_key)
                 else:
-                    print(f"Tugas '{task.judul}' deadline {deadline_str}, tapi notifikasi pushover dimatikan.")
+                    print(f"Tugas '{task.judul}' deadline {deadline_str}, tapi notifikasi pushover dimatikan atau user_key tidak tersedia.")
+
 
             else:
                 print(f"Tugas '{task.judul}' deadline {deadline_str}, tapi notifikasi pushover dimatikan.")
