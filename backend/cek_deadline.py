@@ -18,7 +18,6 @@ def cek_deadline():
 
         print(f"[{now.strftime('%Y-%m-%d %H:%M')}] Mengecek tugas yang deadline...")
 
-        # Task yang deadline dalam 1 hari ke depan dan belum selesai
         upcoming_tasks = session.query(Task).filter(
             Task.done == False,
             Task.deadline != None,
@@ -26,7 +25,6 @@ def cek_deadline():
             Task.deadline >= now
         ).all()
 
-        # Task yang sudah lewat deadline dan belum selesai
         overdue_tasks = session.query(Task).filter(
             Task.done == False,
             Task.deadline != None,
@@ -48,10 +46,6 @@ def cek_deadline():
                     saas.send_notification(task.judul, deskripsi, task.user.pushover_user_key)
                 else:
                     print(f"Tugas '{task.judul}' deadline {deadline_str}, tapi notifikasi pushover dimatikan atau user_key tidak tersedia.")
-
-
-            else:
-                print(f"Tugas '{task.judul}' deadline {deadline_str}, tapi notifikasi pushover dimatikan.")
 
     finally:
         session.close()
