@@ -44,6 +44,11 @@ def serve_html_page(page_name: str):
         return FileResponse(file_path, media_type='text/html')
     raise HTTPException(status_code=404, detail="Page not found")
 
+#===== Test CI/CD ====
+@app.get("/test")
+async def root():
+    return {"message": "API is running"}
+
 
 # ==== Middleware CORS ====
 app.add_middleware(
